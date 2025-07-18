@@ -9,6 +9,7 @@ default = ["legacy-arith", "metrics"]
 fake_crypto = ["bls/fake_crypto"]
 legacy-arith = ["types/legacy-arith"]
 arbitrary-fuzz = [
+    "dep:arbitrary",
     "types/arbitrary-fuzz",
     "merkle_proof/arbitrary",
     "ethereum_ssz/arbitrary",
@@ -19,7 +20,7 @@ metrics = ["dep:metrics"]
 portable = ["bls/supranational-portable"]
 
 [dependencies]
-arbitrary = { workspace = true }
+arbitrary = { workspace = true, optional = true }
 bls = { workspace = true }
 derivative = { workspace = true }
 ethereum_hashing = { workspace = true }
