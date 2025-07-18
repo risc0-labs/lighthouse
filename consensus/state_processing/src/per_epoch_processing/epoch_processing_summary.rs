@@ -1,4 +1,5 @@
 use super::base::{validator_statuses::InclusionInfo, TotalBalances, ValidatorStatus};
+#[cfg(feature = "metrics")]
 use crate::metrics;
 use std::sync::Arc;
 use types::{
@@ -88,23 +89,25 @@ impl<E: EthSpec> ParticipationEpochSummary<E> {
 impl<E: EthSpec> EpochProcessingSummary<E> {
     /// Updates some Prometheus metrics with some values in `self`.
     pub fn observe_metrics(&self) -> Result<(), BeaconStateError> {
-        metrics::set_gauge(
-            &metrics::PARTICIPATION_PREV_EPOCH_HEAD_ATTESTING_GWEI_TOTAL,
-            self.previous_epoch_head_attesting_balance()? as i64,
-        );
-        metrics::set_gauge(
-            &metrics::PARTICIPATION_PREV_EPOCH_TARGET_ATTESTING_GWEI_TOTAL,
-            self.previous_epoch_target_attesting_balance()? as i64,
-        );
-        metrics::set_gauge(
-            &metrics::PARTICIPATION_PREV_EPOCH_SOURCE_ATTESTING_GWEI_TOTAL,
-            self.previous_epoch_source_attesting_balance()? as i64,
-        );
-        metrics::set_gauge(
-            &metrics::PARTICIPATION_CURRENT_EPOCH_TOTAL_ACTIVE_GWEI_TOTAL,
-            self.current_epoch_total_active_balance() as i64,
-        );
-
+        #[cfg(feature = "metrics")]
+        {
+            metrics::set_gauge(
+                &metrics::PARTICIPATION_PREV_EPOCH_HEAD_ATTESTING_GWEI_TOTAL,
+                self.previous_epoch_head_attesting_balance()? as i64,
+            );
+            metrics::set_gauge(
+                &metrics::PARTICIPATION_PREV_EPOCH_TARGET_ATTESTING_GWEI_TOTAL,
+                self.previous_epoch_target_attesting_balance()? as i64,
+            );
+            metrics::set_gauge(
+                &metrics::PARTICIPATION_PREV_EPOCH_SOURCE_ATTESTING_GWEI_TOTAL,
+                self.previous_epoch_source_attesting_balance()? as i64,
+            );
+            metrics::set_gauge(
+                &metrics::PARTICIPATION_CURRENT_EPOCH_TOTAL_ACTIVE_GWEI_TOTAL,
+                self.current_epoch_total_active_balance() as i64,
+            );
+        }
         Ok(())
     }
 

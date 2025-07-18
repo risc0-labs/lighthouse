@@ -1,10 +1,10 @@
 /// A collection of all functions that mutates the `ProgressiveBalancesCache`.
+#[cfg(feature = "metrics")]
 use crate::metrics::{
     self, PARTICIPATION_CURR_EPOCH_TARGET_ATTESTING_GWEI_PROGRESSIVE_TOTAL,
     PARTICIPATION_PREV_EPOCH_TARGET_ATTESTING_GWEI_PROGRESSIVE_TOTAL,
 };
 use crate::{BlockProcessingError, EpochProcessingError};
-use metrics::set_gauge;
 use types::{
     is_progressive_balances_enabled, BeaconState, BeaconStateError, ChainSpec, Epoch,
     EpochTotalBalances, EthSpec, ParticipationFlags, ProgressiveBalancesCache, Validator,
@@ -20,7 +20,7 @@ pub fn initialize_progressive_balances_cache<E: EthSpec>(
     {
         return Ok(());
     }
-
+    #[cfg(feature = "metrics")]
     let _timer = metrics::start_timer(&metrics::BUILD_PROGRESSIVE_BALANCES_CACHE_TIME);
 
     // Calculate the total flag balances for previous & current epoch in a single iteration.
@@ -149,17 +149,19 @@ pub fn update_progressive_balances_on_epoch_transition<E: EthSpec>(
 }
 
 pub fn update_progressive_balances_metrics(
-    cache: &ProgressiveBalancesCache,
+    _cache: &ProgressiveBalancesCache,
 ) -> Result<(), BeaconStateError> {
-    set_gauge(
-        &PARTICIPATION_PREV_EPOCH_TARGET_ATTESTING_GWEI_PROGRESSIVE_TOTAL,
-        cache.previous_epoch_target_attesting_balance()? as i64,
-    );
+    #[cfg(feature = "metrics")]
+    {
+        metrics::set_gauge(
+            &PARTICIPATION_PREV_EPOCH_TARGET_ATTESTING_GWEI_PROGRESSIVE_TOTAL,
+            _cache.previous_epoch_target_attesting_balance()? as i64,
+        );
 
-    set_gauge(
-        &PARTICIPATION_CURR_EPOCH_TARGET_ATTESTING_GWEI_PROGRESSIVE_TOTAL,
-        cache.current_epoch_target_attesting_balance()? as i64,
-    );
-
+        metrics::set_gauge(
+            &PARTICIPATION_CURR_EPOCH_TARGET_ATTESTING_GWEI_PROGRESSIVE_TOTAL,
+            _cache.current_epoch_target_attesting_balance()? as i64,
+        );
+    }
     Ok(())
 }
