@@ -38,7 +38,7 @@ smallvec = { workspace = true }
 ssz_types = { workspace = true }
 test_random_derive = { path = "../../common/test_random_derive" }
 tree_hash = { workspace = true }
-types = { workspace = true }
+types = { workspace = true, default-features = false, features = ["legacy-arith"] }
 
 [dev-dependencies]
 beacon_chain = { workspace = true }

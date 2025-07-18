@@ -256,7 +256,7 @@ tracing-log = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 tree_hash = "0.10.0"
 tree_hash_derive = "0.10.0"
-types = { path = "consensus/types" }
+types = { path = "consensus/types", default-features = false, features = ["legacy-arith"] }
 unused_port = { path = "common/unused_port" }
 url = "2"
 uuid = { version = "0.8", features = ["serde", "v4"] }
