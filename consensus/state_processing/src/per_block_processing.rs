@@ -143,6 +143,7 @@ pub fn per_block_processing<E: EthSpec, Payload: AbstractExecPayload<E>>(
         BlockSignatureStrategy::NoVerification => VerifySignatures::False,
         BlockSignatureStrategy::VerifyRandao => VerifySignatures::False,
     };
+    tracing::info!("Validators length: {}", state.validators().len());
 
     let proposer_index = process_block_header(
         state,
@@ -151,6 +152,8 @@ pub fn per_block_processing<E: EthSpec, Payload: AbstractExecPayload<E>>(
         ctxt,
         spec,
     )?;
+
+    tracing::info!("Proposer index: {}", proposer_index);
 
     if verify_signatures.is_true() {
         verify_block_signature(state, signed_block, ctxt, spec)?;
@@ -246,6 +249,8 @@ pub fn process_block_header<E: EthSpec>(
     *state.latest_block_header_mut() = block_header;
 
     // Verify proposer is not slashed
+    tracing::info!("verifying proposer {} is not slashed", proposer_index);
+
     verify!(
         !state.get_validator(proposer_index as usize)?.slashed,
         HeaderInvalid::ProposerSlashed(proposer_index)

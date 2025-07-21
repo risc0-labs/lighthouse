@@ -1958,6 +1958,7 @@ impl<E: EthSpec> BeaconState<E> {
 
     /// Build the slashings cache if it needs to be built.
     pub fn build_slashings_cache(&mut self) -> Result<(), Error> {
+        tracing::info!("Building slashings cache");
         let latest_block_slot = self.latest_block_header().slot;
         if !self.slashings_cache().is_initialized(latest_block_slot) {
             *self.slashings_cache_mut() = SlashingsCache::new(latest_block_slot, self.validators());

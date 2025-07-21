@@ -15,6 +15,7 @@ pub fn initialize_progressive_balances_cache<E: EthSpec>(
     state: &mut BeaconState<E>,
     spec: &ChainSpec,
 ) -> Result<(), BeaconStateError> {
+    tracing::info!("Initializing progressive balances cache");
     if !is_progressive_balances_enabled(state)
         || state.progressive_balances_cache().is_initialized()
     {

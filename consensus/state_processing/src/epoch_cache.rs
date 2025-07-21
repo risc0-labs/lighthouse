@@ -135,6 +135,7 @@ pub fn initialize_epoch_cache<E: EthSpec>(
     state: &mut BeaconState<E>,
     spec: &ChainSpec,
 ) -> Result<(), EpochCacheError> {
+    tracing::info!("Initializing epoch cache");
     if is_epoch_cache_initialized(state)? {
         // `EpochCache` has already been initialized and is valid, no need to initialize.
         return Ok(());
